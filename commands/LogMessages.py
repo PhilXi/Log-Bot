@@ -12,7 +12,7 @@ class Log(Cog):
 	@Cog.listener()
 	async def on_ready(self):
 			self.log_channel = self.bot.get_channel(870282114510233690)
-			self.bot.("log")
+			self.bot.cogs_ready.ready_up("log")
 
 	@Cog.listener()
 	async def on_message_edit(self, before, after):
@@ -27,7 +27,7 @@ class Log(Cog):
 				)
 				embed.set_author(name=after.author,
 				icon_url=after.author.avatar_url)
-				embed.set_footer(text=f"Message ID: {after.id} " + "\n" f"User ID        : {after.author.id}")
+				embed.set_footer(text=f"User ID: {after.author.id} " + "\n" f"Message ID: {after.id}")
 
 				fields = [("Before", before.content, False),
 						  ("After", after.content, False)]
@@ -50,7 +50,7 @@ class Log(Cog):
             )
 			embed.set_author(name=message.author,
 			icon_url=message.author.avatar_url)
-			embed.set_footer(text=f"Message ID: {message.id} " + "\n" f"User ID        : {message.author.id}")
+			embed.set_footer(text=f"User ID: {message.author.id} " + "\n" f"Message ID: {message.id}")
 			fields = [("Content:", message.content, False)]
 
 			for name, value, inline in fields:
