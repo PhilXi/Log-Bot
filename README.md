@@ -1,2 +1,2 @@
 # Discord-Log-Bot
- A simple Discord Log-Bot
+ A simple Log-Bot for Discord Servers
