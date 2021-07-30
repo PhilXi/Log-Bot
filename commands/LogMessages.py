@@ -12,7 +12,7 @@ class Log(Cog):
 	@Cog.listener()
 	async def on_ready(self):
 			self.log_channel = self.bot.get_channel(870282114510233690)
-			self.bot.cogs_ready.ready_up("log")
+			self.bot.("log")
 
 	@Cog.listener()
 	async def on_message_edit(self, before, after):
@@ -21,11 +21,13 @@ class Log(Cog):
 				embed = Embed(
 
 					title="Message edited",
-					description=f"A [message]({after.jump_url}) from {after.author.mention} ({after.author.id}) in {after.channel.mention} was edited",
+					description=f"A [message]({after.jump_url}) from {after.author.mention} in {after.channel.mention} was edited",
 					colour = discord.Colour.orange(),
 					timestamp=datetime.utcnow()
 				)
-				embed.set_footer(text=f"Message ID: {after.id}")
+				embed.set_author(name=after.author,
+				icon_url=after.author.avatar_url)
+				embed.set_footer(text=f"Message ID: {after.id} " + "\n" f"User ID        : {after.author.id}")
 
 				fields = [("Before", before.content, False),
 						  ("After", after.content, False)]
@@ -40,13 +42,16 @@ class Log(Cog):
 		#if not message.author.bot:
 			embed = Embed(
 
-                title=f"{message.author.avatar.url} Message deleted",
-				description=f"A message from {message.author.mention} ({message.author.id}) in {message.channel.mention} was deleted",
+                title="Message deleted",
+				description=f"A message from {message.author.mention} in {message.channel.mention} was deleted",
 				colour = discord.Colour.red(),
+				icon_url=message.author.avatar_url,
 				timestamp=datetime.utcnow()
             )
-			embed.set_footer(text=f"Message ID: {message.id}")
-			fields = [("Content", message.content, False)]
+			embed.set_author(name=message.author,
+			icon_url=message.author.avatar_url)
+			embed.set_footer(text=f"Message ID: {message.id} " + "\n" f"User ID        : {message.author.id}")
+			fields = [("Content:", message.content, False)]
 
 			for name, value, inline in fields:
 				embed.add_field(name=name, value=value, inline=inline)
