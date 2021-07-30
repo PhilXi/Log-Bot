@@ -46,7 +46,7 @@ token = os.getenv('TOKEN')
 
 if __name__ == '__main__':
     #load extention
-    for filename in os.listdir('.\\Discord-Log-Bot.\\commands'):
+    for filename in os.listdir('.\\commands'):
         if filename.endswith('.py'):
            bot.load_extension(f'commands.{filename[: -3]}')
 

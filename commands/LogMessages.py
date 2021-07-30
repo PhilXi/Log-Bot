@@ -20,11 +20,12 @@ class Log(Cog):
 			if before.content != after.content:
 				embed = Embed(
 
-					title="Message edit",
-					description=f"Edit by {after.author.display_name}.",
+					title="Message edited",
+					description=f"A [message]({after.jump_url}) from {after.author.mention} ({after.author.id}) in {after.channel.mention} was edited",
 					colour = discord.Colour.orange(),
 					timestamp=datetime.utcnow()
 				)
+				embed.set_footer(text=f"Message ID: {after.id}")
 
 				fields = [("Before", before.content, False),
 						  ("After", after.content, False)]
@@ -39,12 +40,12 @@ class Log(Cog):
 		#if not message.author.bot:
 			embed = Embed(
 
-                title=f"Message deletion",
-				description=f"Action by {message.author.display_name}.",
+                title=f"{message.author.avatar.url} Message deleted",
+				description=f"A message from {message.author.mention} ({message.author.id}) in {message.channel.mention} was deleted",
 				colour = discord.Colour.red(),
 				timestamp=datetime.utcnow()
             )
-
+			embed.set_footer(text=f"Message ID: {message.id}")
 			fields = [("Content", message.content, False)]
 
 			for name, value, inline in fields:
