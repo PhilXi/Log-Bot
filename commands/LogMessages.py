@@ -12,7 +12,6 @@ class Log(Cog):
 	@Cog.listener()
 	async def on_ready(self):
 			self.log_channel = self.bot.get_channel(870282114510233690)
-			self.bot.cogs_ready.ready_up("log")
 
 	@Cog.listener()
 	async def on_message_edit(self, before, after):
