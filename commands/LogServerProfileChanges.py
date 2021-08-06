@@ -1,3 +1,4 @@
+from typing import List
 import discord
 from datetime import datetime
 from discord import Embed
@@ -23,6 +24,7 @@ class ServerProfileChanges(Cog):
             )
 			embed.set_author(name=after.name,
 			icon_url=after.avatar_url)
+			embed.set_thumbnail(url=after.avatar_url)
 			embed.set_footer(text=f"User ID: {after.id}")
 
 			fields = [("Before", before.display_name, False),
@@ -34,6 +36,19 @@ class ServerProfileChanges(Cog):
 			await self.log_channel.send(embed=embed)
 
 		elif before.roles != after.roles:
+
+			roles = before.roles
+			roles2 = []
+			for r in roles:
+				if r.name != '@everyone':
+					roles2.append(r.mention)
+
+			roles = after.roles
+			roles3 = []
+			for r in roles: 
+				if r.name != '@everyone':
+					roles3.append(r.mention)
+
 			embed = Embed(
 				colour = discord.Colour.blue(),
 				description=f"{after.mention}'s Rollen haben sich aktualisiert:",
@@ -41,17 +56,12 @@ class ServerProfileChanges(Cog):
             )
 			embed.set_author(name=after.name,
 			icon_url=after.avatar_url)
-			embed.set_footer(text=f"User ID: {after.id}")
+			embed.set_thumbnail(url=after.avatar_url)
+			embed.add_field(name='Before:', value=roles2, inline=False)
+			embed.add_field(name='After:', value=roles3, inline=False)
+			embed.set_footer(text=f"User ID: {after.id}"),
 
-			fields = [("Before:", ", ".join([r.mention for r in before.roles]), False),
-					  ("After:", ", ".join([r.mention for r in after.roles]), False)]
-
-			for name, value, inline in fields:
-				embed.add_field(name=name, value=value, inline=inline)
-
-			await self.log_channel.send(embed=embed)
-
-
-
+			await self.log_channel.send(embed=embed)	
+	
 def setup(bot):
 	bot.add_cog(ServerProfileChanges(bot))

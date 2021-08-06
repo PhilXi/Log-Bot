@@ -21,7 +21,7 @@ class ProfileChanges(Cog):
 
 			embed = Embed(
 				colour = discord.Colour.purple(),
-				description=f"{after.mention} hat seinen Profil-Namen aktualisiert:",
+				description = "hat seinen Profil-Namen aktualisiert:",
 				timestamp = datetime.utcnow()
             )
 			embed.set_author(name=after.name,
@@ -38,7 +38,7 @@ class ProfileChanges(Cog):
 
 
 		# Loggs changes to the Discriminator of a User
-		elif before.discriminaotr != after.discriminator:
+		elif before.discriminator != after.discriminator:
 			embed = Embed(
 				colour = discord.Colour.purple(),
 				description=f"{after.mention} hat seinen Diskriminator aktualisiert:",
