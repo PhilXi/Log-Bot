@@ -1,0 +1,19 @@
+name: Docker-Push
+
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Download Repository
+      - name: Login to DockerHub Registry
+        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Build the latest Docker image
+        run: docker build . --tag ${{ secrets.DOCKER_TAG }}
+      - name: Push the latest Docker image
+        run: docker push ${{ secrets.DOCKER_TAG }}
