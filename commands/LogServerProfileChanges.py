@@ -22,7 +22,7 @@ class ServerProfileChanges(Cog):
 				description=f"{after.mention} hat seinen Server-Namen Aktualisiert:",
 				timestamp = datetime.utcnow()
             )
-			embed.set_author(name=after.name,
+			embed.set_author(name=f"{after.nick}#{after.discriminator}",
 			icon_url=after.avatar_url)
 			embed.set_thumbnail(url=after.avatar_url)
 			embed.set_footer(text=f"User ID: {after.id}")
@@ -54,7 +54,7 @@ class ServerProfileChanges(Cog):
 				description=f"{after.mention}'s Rollen haben sich aktualisiert:",
 				timestamp = datetime.utcnow()
             )
-			embed.set_author(name=after.name,
+			embed.set_author(name=f"{after.nick}#{after.discriminator}",
 			icon_url=after.avatar_url)
 			embed.set_thumbnail(url=after.avatar_url)
 			embed.add_field(name='Before:', value=roles2, inline=False)

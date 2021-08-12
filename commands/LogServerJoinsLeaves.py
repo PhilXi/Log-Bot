@@ -22,7 +22,7 @@ class ServerJoinsLeaves(Cog):
 			description=f":outbox_tray: {member.mention} hat den Server verlassen",
 			timestamp = datetime.utcnow()
         )
-		embed.set_author(name=member.name,
+		embed.set_author(name=f"{member.name}#{member.discriminator}",
 		icon_url=member.avatar_url)
 		embed.set_thumbnail(url=member.avatar_url)
 		#embed.add_field(f"{member.mention} hat den Server verlassen")
@@ -37,7 +37,7 @@ class ServerJoinsLeaves(Cog):
 			description=f":inbox_tray: {member.mention} ist dem Server beigetreten",
 			timestamp = datetime.utcnow()
         )
-		embed.set_author(name=member.name,
+		embed.set_author(name=f"{member.name}#{member.discriminator}",
 		icon_url=member.avatar_url)
 		embed.set_thumbnail(url=member.avatar_url)
 		embed.add_field(name='Accounterstellung', value=member.created_at.strftime("%d.%m.%Y"), inline=False)

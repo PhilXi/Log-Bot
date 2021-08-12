@@ -1,6 +1,7 @@
 import discord
 from discord import channel
 from discord.ext import commands
+import sys
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)

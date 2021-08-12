@@ -3,7 +3,10 @@ from datetime import datetime
 from discord import Embed
 from discord.ext.commands import Cog
 from discord.ext.commands import command
+from discord.ext import commands
 
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
 
 class ProfileChanges(Cog):
 	def __init__(self, bot):
@@ -13,12 +16,10 @@ class ProfileChanges(Cog):
 	async def on_ready(self):
 			self.log_channel = self.bot.get_channel(870282114510233690)
 	
-	Cog.listener()
+	@Cog.listener()
 	async def on_user_update(self, before, after):
-
 		# Loggs changes to the Username
 		if before.name != after.name:
-
 			embed = Embed(
 				colour = discord.Colour.purple(),
 				description = "hat seinen Profil-Namen aktualisiert:",
@@ -66,8 +67,8 @@ class ProfileChanges(Cog):
 			icon_url=after.avatar_url)
 			embed.set_footer(text=f"User ID: {after.id}")
 
-			embed.set_thumbnail(url=before.avatar_url)
-			embed.set_image(url=after.avatar_url)
+			embed.set_thumbnail(url=after.avatar_url)
+			embed.add_field(name='Avatar', value=f"[Before:]({before.avatar_url}) -> [After]({after.avatar_url})", inline=False)
 
 			await self.log_channel.send(embed=embed)
 
