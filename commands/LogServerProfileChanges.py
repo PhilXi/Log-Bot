@@ -54,14 +54,14 @@ class ServerProfileChanges(Cog):
 				description=f"{after.mention}'s Rollen haben sich aktualisiert:",
 				timestamp = datetime.utcnow()
             )
-			embed.set_author(name=f"{after.nick}#{after.discriminator}",
+			embed.set_author(name=f"{after.name}#{after.discriminator}",
 			icon_url=after.avatar_url)
 			embed.set_thumbnail(url=after.avatar_url)
 			embed.add_field(name='Before:', value=roles2, inline=False)
 			embed.add_field(name='After:', value=roles3, inline=False)
 			embed.set_footer(text=f"User ID: {after.id}"),
 
-			await self.log_channel.send(embed=embed)	
+			await self.log_channel.send(embed=embed)
 	
 def setup(bot):
 	bot.add_cog(ServerProfileChanges(bot))

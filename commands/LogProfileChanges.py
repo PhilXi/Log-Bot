@@ -25,7 +25,7 @@ class ProfileChanges(Cog):
 				description = "hat seinen Profil-Namen aktualisiert:",
 				timestamp = datetime.utcnow()
             )
-			embed.set_author(name=after.name,
+			embed.set_author(name=f"{after.name}#{after.discriminator}",
 			icon_url=after.avatar_url)
 			embed.set_thumbnail(url=after.avatar_url)
 			embed.set_footer(text=f"User ID: {after.id}")
@@ -45,7 +45,7 @@ class ProfileChanges(Cog):
 				description=f"{after.mention} hat seinen Diskriminator aktualisiert:",
 				timestamp = datetime.utcnow()
             )
-			embed.set_author(name=after.name,
+			embed.set_author(name=f"{after.name}#{after.discriminator}",
 			icon_url=after.avatar_url)
 			embed.set_footer(text=f"User ID: {after.id}")
 
@@ -63,7 +63,7 @@ class ProfileChanges(Cog):
 				description=f"{after.mention} hat sein Profilbild aktualisiert:",
 				timestamp = datetime.utcnow()
             )
-			embed.set_author(name=after.name,
+			embed.set_author(name=f"{after.name}#{after.discriminator}",
 			icon_url=after.avatar_url)
 			embed.set_footer(text=f"User ID: {after.id}")
 
