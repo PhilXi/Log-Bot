@@ -2,6 +2,7 @@ from typing import List
 import discord
 from datetime import datetime
 from discord import Embed
+from discord.embeds import EmptyEmbed
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 
@@ -37,31 +38,50 @@ class ServerProfileChanges(Cog):
 
 		elif before.roles != after.roles:
 
+			# Removes @everyone role
 			roles = before.roles
 			roles2 = []
 			for r in roles:
-				if r.name != '@everyone':
+				if r.name != "@everyone":
 					roles2.append(r.mention)
+			print(f"Before;raw {roles2}")
+			print(f"Before: {txt4}")
 
+			# Removes @everyone role
 			roles = after.roles
 			roles3 = []
 			for r in roles: 
-				if r.name != '@everyone':
+				if r.name != "@everyone":
 					roles3.append(r.mention)
+			# If the roles are None
+			print(f"Afer;raw {roles3}")
+			txt3 = ""
+			if not roles3:
+				print("list is empty")
+				txt3 += "-"
+			else:
+				print("list not empty")
+				txt3 = roles3
+			# Improves the list
+			txt5 = ""
+			for i in txt3:
+				txt5 += f"|{i} \n"
+			print(f"After: {txt5}")
+		
 
 			embed = Embed(
 				colour = discord.Colour.blue(),
 				description=f"{after.mention}'s Rollen haben sich aktualisiert:",
 				timestamp = datetime.utcnow()
-            )
+			)
 			embed.set_author(name=f"{after.name}#{after.discriminator}",
 			icon_url=after.avatar_url)
-			embed.set_thumbnail(url=after.avatar_url)
-			embed.add_field(name='Before:', value=roles2, inline=False)
-			embed.add_field(name='After:', value=roles3, inline=False)
+			#embed.set_thumbnail(url=after.avatar_url)
+			embed.add_field(name='Before:', value=f"{txt4}", inline=True)
+			embed.add_field(name='After:', value=f"{txt5}", inline=True)
 			embed.set_footer(text=f"User ID: {after.id}"),
 
 			await self.log_channel.send(embed=embed)
-	
+
 def setup(bot):
 	bot.add_cog(ServerProfileChanges(bot))

@@ -1,7 +1,9 @@
 import discord
 from discord import channel
 from discord.ext import commands
-import sys
+from datetime import datetime
+from discord.ext.commands import Cog
+from discord import Embed
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
@@ -59,7 +61,6 @@ class ReactionRoles(commands.Cog):
         
         msg = await ctx.send(embed=embed)
         await msg.add_reaction('<:members:871691185721331762>')
-
 
 def setup(bot):
     bot.add_cog(ReactionRoles(bot))
