@@ -45,6 +45,18 @@ class ServerProfileChanges(Cog):
 				if r.name != "@everyone":
 					roles2.append(r.mention)
 			print(f"Before;raw {roles2}")
+			# If the roles are None
+			txt2 = ""
+			if not roles2:
+				print("list is empty")
+				txt2 += "-"
+			else:
+				print("list not empty")
+				txt2 = roles2
+			# Improves the list
+			txt4 = ""
+			for i in txt2:
+				txt4 += f"|{i} \n"
 			print(f"Before: {txt4}")
 
 			# Removes @everyone role
@@ -76,7 +88,7 @@ class ServerProfileChanges(Cog):
 			)
 			embed.set_author(name=f"{after.name}#{after.discriminator}",
 			icon_url=after.avatar_url)
-			#embed.set_thumbnail(url=after.avatar_url)
+			embed.set_thumbnail(url=after.avatar_url)
 			embed.add_field(name='Before:', value=f"{txt4}", inline=True)
 			embed.add_field(name='After:', value=f"{txt5}", inline=True)
 			embed.set_footer(text=f"User ID: {after.id}"),
