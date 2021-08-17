@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: https://github.com/philxi/log-bot
+          repository: philxi/log-bot
       - run: cd log-bot
       - run: git remote add dee https://github.com/drdeee/log-bot
       - run: git push --force dee main
