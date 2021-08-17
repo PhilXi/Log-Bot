@@ -9,13 +9,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: git remote add phil https://github.com/philxi/log-bot
-      - run: git pull phil main
-      - run: git push origin
-      - name: Login to DockerHub Registry
-        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      - name: Build the latest Docker image
-        run: docker build . --tag ${{ secrets.DOCKER_TAG }}
-      - name: Push the latest Docker image
-        run: docker push ${{ secrets.DOCKER_TAG }}
+      - run: git clone https://github.com/philxi/log-bot
+      - run: cd log-bot
+      - run: git remote add dee https://github.com/drdeee/log-bot
+      - run: git push --force dee main
