@@ -12,6 +12,5 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: philxi/log-bot
-      - run: cd log-bot
       - run: git remote add dee https://github.com/drdeee/log-bot
       - run: git push --force dee main
