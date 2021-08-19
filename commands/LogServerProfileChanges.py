@@ -44,20 +44,20 @@ class ServerProfileChanges(Cog):
 			for r in roles:
 				if r.name != "@everyone":
 					roles2.append(r.mention)
-			print(f"Before;raw {roles2}")
+			
 			# If the roles are None
 			txt2 = ""
 			if not roles2:
-				print("list is empty")
+				
 				txt2 += "-"
 			else:
-				print("list not empty")
+				
 				txt2 = roles2
 			# Improves the list
 			txt4 = ""
 			for i in txt2:
 				txt4 += f"|{i} \n"
-			print(f"Before: {txt4}")
+			
 
 			# Removes @everyone role
 			roles = after.roles
@@ -66,7 +66,7 @@ class ServerProfileChanges(Cog):
 				if r.name != "@everyone":
 					roles3.append(r.mention)
 			# If the roles are None
-			print(f"Afer;raw {roles3}")
+			
 			txt3 = ""
 			if not roles3:
 				print("list is empty")
@@ -78,7 +78,7 @@ class ServerProfileChanges(Cog):
 			txt5 = ""
 			for i in txt3:
 				txt5 += f"|{i} \n"
-			print(f"After: {txt5}")
+			
 		
 
 			embed = Embed(
