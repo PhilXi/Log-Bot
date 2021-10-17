@@ -24,6 +24,27 @@ class TempRoles(commands.Cog):
 
             await member.add_roles(role)
 
+            with open('.\\databases\\test.json', 'r') as file:
+                calender_data = json.load(file)
+                new_user = str(member)
+
+                # remove old user
+                if new_user in calender_data:
+                    calender_data[new_user] -= 1
+                    with open('.\\databases\\test.json', 'w') as remove_user_data:
+                        json.dump(calender_data, remove_user_data, indent=4)
+
+                elif new_user in calender_data:
+                    calender_data[new_user] +=1
+                    with open('.\\databases\\test.json', 'w') as update_user_data:
+                        json.dump(calender_data, update_user_data, indent=4)
+
+                # add new user
+                else:
+                    calender_data[new_user] = 1
+                    with open('.\\databases\\test.json', 'w') as new_user_data:
+                        json.dump(calender_data, new_user_data, indent=4)
+
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
 
@@ -41,6 +62,33 @@ class TempRoles(commands.Cog):
                 await member.remove_roles(role, reason="Reaction role.")
             else:
                 print("Member not found")
+
+            
+            with open('.\\databases\\test.json', 'r') as file:
+                calender_data = json.load(file)
+                new_user = str(member)
+
+                # remove old user
+                if new_user in calender_data:
+                    calender_data[new_user] -= 1
+                    with open('.\\databases\\test.json', 'w') as remove_user_data:
+                        json.dump(calender_data, remove_user_data, indent=4)
+                
+                
+                elif new_user in calender_data:
+                    calender_data[new_user] +=1
+                    with open('.\\databases\\test.json', 'w') as update_user_data:
+                        json.dump(calender_data, update_user_data, indent=4)
+
+
+                # add new user
+                else:
+                    calender_data[new_user] = 1
+                    with open('.\\databases\\test.json', 'w') as new_user_data:
+                        json.dump(calender_data, new_user_data, indent=4)
+
+            
+            
 
     
  
