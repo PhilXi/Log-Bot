@@ -80,9 +80,18 @@ class TempRoles(commands.Cog):
                 user_time_column.append([time_count_value[1]])
 
             # Add column to table
-            user_rank_table = tabulate
-            user_name_table = tabulate
-            user_time_count_table = tabulate
+            user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['1.\n'], numalign='left')
+            user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Name\n'], numalign='left')
+            user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Messages\n'], numalign='left')
+
+            # Image
+            image_template = Image.open('.\\assets\\test.png')
+
+            # Set Font
+            font = ImageFont.truetype('./assets/cleaderboard.png')
+
+            # Set the positions
+            
 
 
     @commands.Cog.listener()
