@@ -28,9 +28,9 @@ class TempRoles(commands.Cog):
 
             await member.add_roles(role)
 
-            with open('.\\databases\\test.json', 'r') as file:
+            with open('.\\databases\\time.json', 'r') as file:
                 calender_data = json.load(file)
-                new_user = str(member)
+                new_user = str(member.id)
 
                 # remove old user
                 if new_user in calender_data:
@@ -73,7 +73,7 @@ class TempRoles(commands.Cog):
                 user_name_column.append([rank_index + 1])
 
             # User names
-            for name_index, name_value in enumerate(new_timeboard[:10]):
+            for name_index, name_value in enumerate(new_timeboard[:1]):
                 user_name_column.append([await self.bot.fetch_user(int(name_value[0]))])
             
             # User Time count
@@ -89,7 +89,7 @@ class TempRoles(commands.Cog):
             image_template = Image.open('.\\assets\\test.png')
 
             # Set Font
-            font = ImageFont.truetype('./assets/cleaderboard.png')
+            font = ImageFont.truetype('theboldfont.ttf', 14)
 
             # Set the positions
             rank_text_position = 30, 50 
@@ -97,7 +97,7 @@ class TempRoles(commands.Cog):
             time_count_text_position = 350, 50
 
             # Draw
-            draw_on_image = Image.Draw(image_template)
+            draw_on_image = ImageDraw.Draw(image_template)
             draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
             draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
             draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
