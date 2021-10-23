@@ -1,6 +1,7 @@
 import discord
 import json
 from discord import message
+from discord import channel
 from discord.ext import commands
 from tabulate import tabulate
 from PIL import Image, ImageFont, ImageDraw
@@ -13,7 +14,7 @@ class TempRoles(commands.Cog):
         self.bot = bot 
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
+    async def on_raw_reaction_add(self, payload, ctx):
 
         ourMessageID = 899754595566354492
 
@@ -91,6 +92,20 @@ class TempRoles(commands.Cog):
             font = ImageFont.truetype('./assets/cleaderboard.png')
 
             # Set the positions
+            rank_text_position = 30, 50 
+            name_text_position = 80, 50
+            time_count_text_position = 350, 50
+
+            # Draw
+            draw_on_image = Image.Draw(image_template)
+            draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
+            draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
+            draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
+
+            # Save the image
+            image_template.convert('RGB').save('test.png', 'PNG')
+
+            await ctx.send(file=discord.File('test.png'))
             
 
 
@@ -111,30 +126,6 @@ class TempRoles(commands.Cog):
                 await member.remove_roles(role, reason="Reaction role.")
             else:
                 print("Member not found")
-
-            
-            with open('.\\databases\\test.json', 'r') as file:
-                calender_data = json.load(file)
-                new_user = str(member)
-
-                # remove old user
-                if new_user in calender_data:
-                    calender_data[new_user] -= 1
-                    with open('.\\databases\\time.json', 'w') as remove_user_data:
-                        json.dump(calender_data, remove_user_data, indent=4)
-                
-                
-                elif new_user in calender_data:
-                    calender_data[new_user] +=1
-                    with open('.\\databases\\time.json', 'w') as update_user_data:
-                        json.dump(calender_data, update_user_data, indent=4)
-
-
-                # add new user
-                else:
-                    calender_data[new_user] = 1
-                    with open('.\\databases\\time.json', 'w') as new_user_data:
-                        json.dump(calender_data, new_user_data, indent=4)
 
             
             
