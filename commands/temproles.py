@@ -5,6 +5,8 @@ from discord import channel
 from discord.ext import commands
 from tabulate import tabulate
 from PIL import Image, ImageFont, ImageDraw
+from discord.ext.commands import Cog
+
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
@@ -12,6 +14,10 @@ bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
 class TempRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot 
+    
+    @Cog.listener()
+    async def on_ready(self):
+        self.log_channel = self.bot.get_channel(870591962766520360)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -81,9 +87,9 @@ class TempRoles(commands.Cog):
                 user_time_column.append([time_count_value[1]])
 
             # Add column to table
-            user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['1.\n'], numalign='left')
-            user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Name\n'], numalign='left')
-            user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Messages\n'], numalign='left')
+            user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
+            user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
+            user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar bis:\n'], numalign='left')
 
             # Image
             image_template = Image.open('.\\assets\\test.png')
@@ -94,7 +100,7 @@ class TempRoles(commands.Cog):
             # Set the positions
             rank_text_position = 30, 50 
             name_text_position = 80, 50
-            time_count_text_position = 350, 50
+            time_count_text_position = 300, 50
 
             # Draw
             draw_on_image = ImageDraw.Draw(image_template)
@@ -105,7 +111,7 @@ class TempRoles(commands.Cog):
             # Save the image
             image_template.convert('RGB').save('test.png', 'PNG')
 
-            await ctx.send(file=discord.File('test.png'))
+            await self.log_channel.send(file=discord.File('test.png'))
             
 
 
