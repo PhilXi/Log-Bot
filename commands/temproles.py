@@ -10,14 +10,11 @@ from discord.ext.commands import Cog
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", case_insensitive=True, intents=intents)
+client = discord.Client()
 
 class TempRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot 
-    
-    @Cog.listener()
-    async def on_ready(self):
-        self.log_channel = self.bot.get_channel(870591962766520360)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -27,7 +24,9 @@ class TempRoles(commands.Cog):
         if ourMessageID == payload.message_id:
             member = payload.member
             guild = member.guild
-            emoji = payload.emoji.name         
+            emoji = payload.emoji.name
+            channel = payload.channel_id
+            
 
             if emoji == '30':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
@@ -111,7 +110,9 @@ class TempRoles(commands.Cog):
             # Save the image
             image_template.convert('RGB').save('test.png', 'PNG')
 
-            await self.log_channel.send(file=discord.File('test.png'))
+
+            await payload.member.send(file=discord.File('test.png'))
+
             
 
 
