@@ -25,7 +25,7 @@ class TempRoles(commands.Cog):
             member = payload.member
             guild = member.guild
             emoji = payload.emoji.name
-            channel = payload.channel_id
+            
             
 
             if emoji == '30':
@@ -110,8 +110,10 @@ class TempRoles(commands.Cog):
             # Save the image
             image_template.convert('RGB').save('test.png', 'PNG')
 
+            self.build_channel = self.bot.get_channel(870591962766520360)
 
-            await payload.member.send(file=discord.File('test.png'))
+
+            await self.build_channel(file=discord.File('test.png'))
 
             
 
