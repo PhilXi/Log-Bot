@@ -617,88 +617,82 @@ class TempRoles(commands.Cog):
                 role = discord.utils.get(guild.roles, name="Verfügbar")
 
                 await member.add_roles(role)
-
                 
-            with open('.\\databases\\time.json', 'r') as file:
-                calender_data = json.load(file)
-                new_user = str(member.id)
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    new_user = str(member.id)
+                    
+                    # remove old user
+                    if new_user in calender_data:
+                        calender_data[new_user] - 30
+                        with open('.\\databases\\time.json', 'w') as remove_user_data:
+                            json.dump(calender_data, remove_user_data, indent=4)
+                            
+                    elif new_user in calender_data:
+                        calender_data[new_user] + 30
+                        with open('.\\databases\\time.json', 'w') as update_user_data:
+                            json.dump(calender_data, update_user_data, indent=4)
 
-                # remove old user
-                if new_user in calender_data:
-                    calender_data[new_user] - 30
-                    with open('.\\databases\\time.json', 'w') as remove_user_data:
-                        json.dump(calender_data, remove_user_data, indent=4)
+                    # add new user
+                    else:
+                        calender_data[new_user] = 30
+                        with open('.\\databases\\time.json', 'w') as new_user_data:
+                            json.dump(calender_data, new_user_data, indent=4)
 
-                elif new_user in calender_data:
-                    calender_data[new_user] + 30
-                    with open('.\\databases\\time.json', 'w') as update_user_data:
-                        json.dump(calender_data, update_user_data, indent=4)
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    user_ids = list(calender_data.keys())
+                    user_time_count = list(calender_data.values())
 
-                # add new user
-                else:
-                    calender_data[new_user] = 30
-                    with open('.\\databases\\time.json', 'w') as new_user_data:
-                        json.dump(calender_data, new_user_data, indent=4)
+                    new_timeboard = []
+                    for index, user_id in enumerate(user_ids, 1):
+                        new_timeboard.append([user_id, user_time_count[index - 1]])
 
-            
-            with open('.\\databases\\time.json', 'r') as file:
-                calender_data = json.load(file)
-            
-            user_ids = list(calender_data.keys())
-            user_time_count = list(calender_data.values())
+                    # Sort timeboard order by user time count
+                    new_timeboard.sort(key=lambda items: items[1], reverse=True)
 
-            new_timeboard = []
+                    user_rank_column = []
+                    user_name_column = []
+                    user_time_column = []
 
-            for index, user_id in enumerate(user_ids, 1):
-                new_timeboard.append([user_id, user_time_count[index - 1]])
+                    # User ranks
+                    for rank_index, rank_value in enumerate(new_timeboard[:10]):
+                        user_rank_column.append([rank_index + 1])
 
-            # Sort timeboard order by user time count
-            new_timeboard.sort(key=lambda items: items[1], reverse=True)
+                    # User names
+                    for name_index, name_value in enumerate(new_timeboard[:10]):
+                        user_name_column.append([await self.bot.fetch_user(int(name_value[0]))])
 
-            user_rank_column = []
-            user_name_column = []
-            user_time_column = []
+                    # User Time count
+                    for time_count_index, time_count_value in enumerate(new_timeboard[:10]):
+                        user_time_column.append([time_count_value[1]])
 
-            # User ranks
-            for rank_index, rank_value in enumerate(new_timeboard[:10]):
-                user_rank_column.append([rank_index + 1])
+                    # Add column to table
+                    user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
+                    user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
+                    user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar für:\n'], numalign='left')
 
-            # User names
-            for name_index, name_value in enumerate(new_timeboard[:10]):
-                user_name_column.append([await self.bot.fetch_user(int(name_value[0]))])
-            
-            # User Time count
-            for time_count_index, time_count_value in enumerate(new_timeboard[:10]):
-                user_time_column.append([time_count_value[1]])
+                    # Image
+                    image_template = Image.open('.\\assets\\test.png')
 
-            # Add column to table
-            user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
-            user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
-            user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar für:\n'], numalign='left')
+                    # Set Font
+                    font = ImageFont.truetype('theboldfont.ttf', 14)
 
-            # Image
-            image_template = Image.open('.\\assets\\test.png')
+                    # Set the positions
+                    rank_text_position = 30, 50 
+                    name_text_position = 80, 50
+                    time_count_text_position = 300, 50
 
-            # Set Font
-            font = ImageFont.truetype('theboldfont.ttf', 14)
-
-            # Set the positions
-            rank_text_position = 30, 50 
-            name_text_position = 80, 50
-            time_count_text_position = 300, 50
-
-            # Draw
-            draw_on_image = ImageDraw.Draw(image_template)
-            draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
-            draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
-            draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
-
-            # Save the image
-            image_template.convert('RGB').save('test.png', 'PNG')
-
-
-
-            await payload.member.send(file=discord.File('test.png'))
+                    # Draw
+                    draw_on_image = ImageDraw.Draw(image_template)
+                    draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
+                    draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
+                    draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
+                    
+                    # Save the image
+                    image_template.convert('RGB').save('test.png', 'PNG')
+                    
+                    await payload.member.send(file=discord.File('test.png'))
 
         
 
