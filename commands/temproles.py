@@ -190,7 +190,7 @@ class TempRoles(commands.Cog):
             draw_on_image = ImageDraw.Draw(image_template)
             draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
             draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
-            draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
+            draw_on_image.text(time_count_text_position, (f'{user_time_count_table} Minuten'), 'white', font=font)
 
             # Save the image
             image_template.convert('RGB').save('test.png', 'PNG')
@@ -200,103 +200,6 @@ class TempRoles(commands.Cog):
             await ctx.send(file=discord.File('test.png'))
 
 
-        
-
-
-    @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
-
-        ourMessageID = 907760467487903775
-
-        if ourMessageID == payload.message_id:
-            member = payload.member
-            emoji = payload.emoji.name
-            guild = await self.bot.fetch_guild(payload.guild_id)
-            member = await guild.fetch_member(payload.user_id)
-            
-            if emoji == '60':
-                role = discord.utils.get(guild.roles, name="Verfügbar")
-
-            if member is not None:
-                await member.remove_roles(role, reason="Reaction role.")
-            else:
-                print("Member not found")
-
-            
-            with open('.\\databases\\time.json', 'r') as file:
-                calender_data = json.load(file)
-                new_user = str(member.id)
-
-                # delete user in database
-                if new_user in calender_data:
-                    del calender_data[new_user]
-                    with open('.\\databases\\time.json', 'w') as remove_user_data:
-                        json.dump(calender_data, remove_user_data, indent=4)
-                        await member.send("Du hast deine Verfügbarkeit beendet.")
-
-                else: 
-                    await member.send("Du bist nicht verfügbar.")
-            
-                        
-            with open('.\\databases\\time.json', 'r') as file:
-                calender_data = json.load(file)
-            
-            user_ids = list(calender_data.keys())
-            user_time_count = list(calender_data.values())
-
-            new_timeboard = []
-
-            for index, user_ids in enumerate(user_ids, 1):
-                new_timeboard.append([user_ids, user_time_count])
-
-            # Sort timeboard order by user time count
-            new_timeboard.sort(key=lambda items: items[1], reverse=True)
-
-            user_rank_column = []
-            user_name_column = []
-            user_time_column = []
-
-            # User ranks
-            for rank_index, rank_value in enumerate(new_timeboard[:10]):
-                user_rank_column.append([rank_index + 1])
-
-            # User names
-            for name_index, name_value in enumerate(new_timeboard[:1]):
-                user_name_column.append([await self.bot.fetch_user(int(name_value[0]))])
-            
-            # User Time count
-            for time_count_index, time_count_value in enumerate(new_timeboard[:10]):
-                user_time_column.append([time_count_value[1]])
-
-            # Add column to table
-            user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
-            user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
-            user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar für:\n'], numalign='left')
-
-            # Image
-            image_template = Image.open('.\\assets\\test.png')
-
-            # Set Font
-            font = ImageFont.truetype('theboldfont.ttf', 14)
-
-            # Set the positions
-            rank_text_position = 30, 50 
-            name_text_position = 80, 50
-            time_count_text_position = 300, 50
-
-            # Draw
-            draw_on_image = ImageDraw.Draw(image_template)
-            draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
-            draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
-            draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
-
-            # Save the image
-            image_template.convert('RGB').save('test.png', 'PNG')
-
-
-
-            #send message
-            await member.send(file=discord.File('test.png'))
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -369,6 +272,7 @@ class TempRoles(commands.Cog):
                     user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
                     user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
                     user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar für:\n'], numalign='left')
+                    
 
                     # Image
                     image_template = Image.open('.\\assets\\test.png')
@@ -385,7 +289,7 @@ class TempRoles(commands.Cog):
                     draw_on_image = ImageDraw.Draw(image_template)
                     draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
                     draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
-                    draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
+                    draw_on_image.text(time_count_text_position, (f'{user_time_count_table} Minuten'), 'white', font=font)
                     
                     # Save the image
                     image_template.convert('RGB').save('test.png', 'PNG')
@@ -399,18 +303,169 @@ class TempRoles(commands.Cog):
                 role = discord.utils.get(guild.roles, name="Verfügbar")
 
                 await member.add_roles(role)
+                # get channel with ourMessageID
+                channel = await self.bot.fetch_channel(channel)
+
+                # shows how long user is available
+                with open('.\\databases\\time.json', 'r') as file:
+                    user_time_count_table = json.load(file)
+                
+                # sends message to channel
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    user_id = str(member.id)
+                    user_time_count = calender_data[user_id]
+
+                    await channel.send(f"{member.mention} ist jetzt verfügbar für {user_time_count} Minuten")
+                
+                # remove reaction from message
+                await payload.message.remove_reaction(payload.emoji, member)
+                #await payload.message.remove_reaction(emoji, member)
+
+                #message = await self.bot.fetch_message(payload.message_id)
+                #await message.remove_reaction(payload.emoji, member)
+                #await self.bot.http.remove_reaction(payload.message_id, emoji, payload.member.id)
+                    
+
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    new_user = str(member.id)
+                            
+                    if new_user in calender_data:
+                        calender_data[new_user] + 60
+                        with open('.\\databases\\time.json', 'w') as update_user_data:
+                            json.dump(calender_data, update_user_data, indent=4)
+
+                    # add new user
+                    else:
+                        calender_data[new_user] = 60
+                        with open('.\\databases\\time.json', 'w') as new_user_data:
+                            json.dump(calender_data, new_user_data, indent=4)
+
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    user_ids = list(calender_data.keys())
+                    user_time_count = list(calender_data.values())
+
+                    new_timeboard = []
+                    for index, user_id in enumerate(user_ids, 1):
+                        new_timeboard.append([user_id, user_time_count[index - 1]])
+
+                    # Sort timeboard order by user time count
+                    new_timeboard.sort(key=lambda items: items[1], reverse=True)
+
+                    user_rank_column = []
+                    user_name_column = []
+                    user_time_column = []
+
+                    # User ranks
+                    for rank_index, rank_value in enumerate(new_timeboard[:10]):
+                        user_rank_column.append([rank_index + 1])
+
+                    # User names
+                    for name_index, name_value in enumerate(new_timeboard[:10]):
+                        user_name_column.append([await self.bot.fetch_user(int(name_value[0]))])
+
+                    # User Time count
+                    for time_count_index, time_count_value in enumerate(new_timeboard[:10]):
+                        user_time_column.append([time_count_value[1]])
+
+                    # Add column to table
+                    user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
+                    user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
+                    user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar für:\n'], numalign='left')
+                    
+
+                    # Image
+                    image_template = Image.open('.\\assets\\test.png')
+
+                    # Set Font
+                    font = ImageFont.truetype('theboldfont.ttf', 14)
+
+                    # Set the positions
+                    rank_text_position = 30, 50 
+                    name_text_position = 80, 50
+                    time_count_text_position = 300, 50
+
+                    # Draw
+                    draw_on_image = ImageDraw.Draw(image_template)
+                    draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
+                    draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
+                    draw_on_image.text(time_count_text_position, (f'{user_time_count_table} Minuten'), 'white', font=font)
+                    
+                    # Save the image
+                    image_template.convert('RGB').save('test.png', 'PNG')
+                    
+                    await payload.member.send(file=discord.File('test.png'))
 
             elif emoji == '90':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
-
+                
                 await member.add_roles(role)
+                # get channel with ourMessageID
+                channel = await self.bot.fetch_channel(channel)
+
+                # shows how long user is available
+                with open('.\\databases\\time.json', 'r') as file:
+                    user_time_count_table = json.load(file)
+                
+                # sends message to channel
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    user_id = str(member.id)
+                    user_time_count = calender_data[user_id]
+
+                    await channel.send(f"{member.mention} ist jetzt verfügbar für {user_time_count} Minuten")
+                
+                
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    new_user = str(member.id)
+                            
+                    if new_user in calender_data:
+                        calender_data[new_user] + 90
+                        with open('.\\databases\\time.json', 'w') as update_user_data:
+                            json.dump(calender_data, update_user_data, indent=4)
+
+                    # add new user
+                    else:
+                        calender_data[new_user] = 90
+                        with open('.\\databases\\time.json', 'w') as new_user_data:
+                            json.dump(calender_data, new_user_data, indent=4)
 
 
             elif emoji == '⛔':
-                #delete user from database
                 role = discord.utils.get(guild.roles, name="Verfügbar")
-
+                        
                 await member.remove_roles(role, reason="Reaction role.")
+                # check if user if is in time.json if so remove user from time.json
+                with open('.\\databases\\time.json', 'r') as file:
+                    calender_data = json.load(file)
+                    new_user = str(member.id)
+                            
+                    if new_user in calender_data:
+                        del calender_data[new_user]
+                        with open('.\\databases\\time.json', 'w') as update_user_data:
+                            json.dump(calender_data, update_user_data, indent=4)
+
+                # get channel with ourMessageID
+                channel = await self.bot.fetch_channel(channel)
+
+                # shows how long user is available
+                with open('.\\databases\\time.json', 'r') as file:
+                    user_time_count_table = json.load(file)
+                
+                # sends message to channel
+                await channel.send(f"{member.mention} ist jetzt nicht mehr verfügbar")
+
+
+
+
+                # remove reaction
+                await payload.message.remove_reaction(emoji, member)
+
+
+
     
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
@@ -443,6 +498,62 @@ class TempRoles(commands.Cog):
                             
                             with open('.\\databases\\time.json', 'w') as remove_user_data:
                                 json.dump(calender_data, remove_user_data, indent=4)
+                                
+                    with open('.\\databases\\time.json', 'r') as file:
+                        calender_data = json.load(file)
+                        user_ids = list(calender_data.keys())
+                        user_time_count = list(calender_data.values())
+                        
+                        new_timeboard = []
+                        for index, user_id in enumerate(user_ids, 1):
+                            new_timeboard.append([user_id, user_time_count[index - 1]])
+                        
+                        # Sort timeboard order by user time count
+                        new_timeboard.sort(key=lambda items: items[1], reverse=True)
+                        
+                        user_rank_column = []
+                        user_name_column = []
+                        user_time_column = []
+
+                        # User ranks
+                        for rank_index, rank_value in enumerate(new_timeboard[:10]):
+                            user_rank_column.append([rank_index + 1])
+
+                        # User names
+                        for name_index, name_value in enumerate(new_timeboard[:10]):
+                            user_name_column.append([await self.bot.fetch_user(int(name_value[0]))])
+
+                        # User Time count
+                        for time_count_index, time_count_value in enumerate(new_timeboard[:10]):
+                            user_time_column.append([time_count_value[1]])
+
+                        # Add column to table
+                        user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
+                        user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
+                        user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar für:\n'], numalign='left')
+                        
+
+                        # Image
+                        image_template = Image.open('.\\assets\\test.png')
+
+                        # Set Font
+                        font = ImageFont.truetype('theboldfont.ttf', 14)
+
+                        # Set the positions
+                        rank_text_position = 30, 50 
+                        name_text_position = 80, 50
+                        time_count_text_position = 300, 50
+
+                        # Draw
+                        draw_on_image = ImageDraw.Draw(image_template)
+                        draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
+                        draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
+                        draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
+                    
+                        # Save the image
+                        image_template.convert('RGB').save('test.png', 'PNG')
+                    
+                        await member.send(file=discord.File('test.png'))
 
                         
                         
@@ -455,6 +566,7 @@ class TempRoles(commands.Cog):
                     role = discord.utils.get(guild.roles, name="Verfügbar")
 
                     await member.add_roles(role)
+
 
 
 
