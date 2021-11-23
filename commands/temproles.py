@@ -30,7 +30,7 @@ class TempRoles(commands.Cog):
             if user_id in calender_data:
                 await ctx.send(f"Du hast noch {calender_data[user_id]} Minuten verfügbar.")
             else:
-                await ctx.send("Du hast noch keine Zeit verfügbar.")     
+                await ctx.send("Du hast keine Zeit mehr verfügbar.")     
 
     @commands.command(pass_context=True)
     async def reset(self, ctx):
@@ -129,9 +129,9 @@ class TempRoles(commands.Cog):
         embed.add_field(name='\u200b', value='Folgende Rollen gibt es: \n - **30** Für eine Verfügbarkeit von 30 Minuten \n - **60** Für eine Verfügbarkeit von 60 Minuten \n - **90** Für eine Verfügbarkeit von 90 Minuten', inline=False)
         
         msg = await ctx.send(embed=embed)
-        await msg.add_reaction('<:30:899420488525299742>')
-        await msg.add_reaction('<:60:906324383432314910>')
-        await msg.add_reaction('<:90:906327588589420544>')
+        await msg.add_reaction('<:300:912465249716809729>')
+        await msg.add_reaction('<:600:912460146779775028>')
+        await msg.add_reaction('<:900:912459869976657920>')
         await msg.add_reaction('⛔')
 
 
@@ -204,7 +204,7 @@ class TempRoles(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
 
-        ourMessageID = 907760467487903775
+        ourMessageID = 912828826122321923
 
         if ourMessageID == payload.message_id:
             member = payload.member
@@ -215,7 +215,7 @@ class TempRoles(commands.Cog):
 
             #checks what emote is added
             
-            if emoji == '30':
+            if emoji == '300':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
 
                 await member.add_roles(role)
@@ -223,6 +223,11 @@ class TempRoles(commands.Cog):
                 channel = await self.bot.fetch_channel(channel)
                 # send message to channel with who is available and how long
                 await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
+
+                # remove reaction from message
+                await self.bot.http.remove_reaction(channel.id, payload.message_id, emoji, payload.user_id)
+
+                
 
                 
                 with open('.\\databases\\time.json', 'r') as file:
@@ -295,11 +300,19 @@ class TempRoles(commands.Cog):
                     image_template.convert('RGB').save('test.png', 'PNG')
                     
                     await payload.member.send(file=discord.File('test.png'))
+                
+                
+                # remove role after 30 minutes
+                await asyncio.sleep(1800)
+                await member.remove_roles(role)
+                # send message to channel that the user is no longer available
+                await channel.send(f"{member.mention} ist nicht mehr verfügbar")
+
 
         
 
 
-            elif emoji == '60':
+            elif emoji == '600':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
 
                 await member.add_roles(role)
@@ -318,13 +331,18 @@ class TempRoles(commands.Cog):
 
                     await channel.send(f"{member.mention} ist jetzt verfügbar für {user_time_count} Minuten")
                 
+                    channel = client.get_channel(payload.channel_id)
+                    message = await channel.fetch_message(payload.message_id)
+                    user = client.get_user(payload.user_id)
+                    emoji = client.get_emoji(912465249716809729)
+                    await message.remove_reaction(emoji, user)
+
                 # remove reaction from message
-                await payload.message.remove_reaction(payload.emoji, member)
+                #await payload.message.remove_reaction(payload.emoji, member)
                 #await payload.message.remove_reaction(emoji, member)
 
-                #message = await self.bot.fetch_message(payload.message_id)
-                #await message.remove_reaction(payload.emoji, member)
-                #await self.bot.http.remove_reaction(payload.message_id, emoji, payload.member.id)
+                message = await self.bot.fetch_message(payload.message_id)
+                await message.remove_reaction(payload.emoji, member)
                     
 
                 with open('.\\databases\\time.json', 'r') as file:
@@ -398,7 +416,7 @@ class TempRoles(commands.Cog):
                     
                     await payload.member.send(file=discord.File('test.png'))
 
-            elif emoji == '90':
+            elif emoji == '900':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
                 
                 await member.add_roles(role)
@@ -463,111 +481,6 @@ class TempRoles(commands.Cog):
 
                 # remove reaction
                 await payload.message.remove_reaction(emoji, member)
-
-
-
-    
-    @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
-                                                                
-            ourMessageID = 907760467487903775
-    
-            if ourMessageID == payload.message_id:
-                member = payload.member
-                emoji = payload.emoji.name
-                guild = await self.bot.fetch_guild(payload.guild_id)
-                member = await guild.fetch_member(payload.user_id)
-    
-                if emoji == '30':
-                    role = discord.utils.get(guild.roles, name="Verfügbar")
-    
-                    await member.remove_roles(role, reason="Reaction role.")
-
-                    # get channel with ourMessageID
-                    channel = await self.bot.fetch_channel(payload.channel_id)
-                    # send message to channel 
-                    await channel.send(f"{member.mention} ist jetzt nicht mehr verfügbar.")
-                    
-                    with open('.\\databases\\time.json', 'r') as file:
-                        calender_data = json.load(file)
-                        new_user = str(member.id)
-                        
-                        # delete user in database
-                        if new_user in calender_data:
-                            del calender_data[new_user]
-                            
-                            with open('.\\databases\\time.json', 'w') as remove_user_data:
-                                json.dump(calender_data, remove_user_data, indent=4)
-                                
-                    with open('.\\databases\\time.json', 'r') as file:
-                        calender_data = json.load(file)
-                        user_ids = list(calender_data.keys())
-                        user_time_count = list(calender_data.values())
-                        
-                        new_timeboard = []
-                        for index, user_id in enumerate(user_ids, 1):
-                            new_timeboard.append([user_id, user_time_count[index - 1]])
-                        
-                        # Sort timeboard order by user time count
-                        new_timeboard.sort(key=lambda items: items[1], reverse=True)
-                        
-                        user_rank_column = []
-                        user_name_column = []
-                        user_time_column = []
-
-                        # User ranks
-                        for rank_index, rank_value in enumerate(new_timeboard[:10]):
-                            user_rank_column.append([rank_index + 1])
-
-                        # User names
-                        for name_index, name_value in enumerate(new_timeboard[:10]):
-                            user_name_column.append([await self.bot.fetch_user(int(name_value[0]))])
-
-                        # User Time count
-                        for time_count_index, time_count_value in enumerate(new_timeboard[:10]):
-                            user_time_column.append([time_count_value[1]])
-
-                        # Add column to table
-                        user_rank_table = tabulate(user_rank_column, tablefmt='plain', headers=['#\n'], numalign='left')
-                        user_name_table = tabulate(user_name_column, tablefmt='plain', headers=['Verfügbar:\n'], numalign='left')
-                        user_time_count_table = tabulate(user_time_column, tablefmt='plain', headers=['Verfügbar für:\n'], numalign='left')
-                        
-
-                        # Image
-                        image_template = Image.open('.\\assets\\test.png')
-
-                        # Set Font
-                        font = ImageFont.truetype('theboldfont.ttf', 14)
-
-                        # Set the positions
-                        rank_text_position = 30, 50 
-                        name_text_position = 80, 50
-                        time_count_text_position = 300, 50
-
-                        # Draw
-                        draw_on_image = ImageDraw.Draw(image_template)
-                        draw_on_image.text(rank_text_position, user_rank_table, 'white', font=font)
-                        draw_on_image.text(name_text_position, user_name_table, 'white', font=font)
-                        draw_on_image.text(time_count_text_position, user_time_count_table, 'white', font=font)
-                    
-                        # Save the image
-                        image_template.convert('RGB').save('test.png', 'PNG')
-                    
-                        await member.send(file=discord.File('test.png'))
-
-                        
-                        
-                elif emoji == '60':
-                    role = discord.utils.get(guild.roles, name="Verfügbar")
-
-                    await member.add_roles(role)
-                    
-                elif emoji == '90':
-                    role = discord.utils.get(guild.roles, name="Verfügbar")
-
-                    await member.add_roles(role)
-
-
 
 
         
