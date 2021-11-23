@@ -222,10 +222,10 @@ class TempRoles(commands.Cog):
                 # get channel with ourMessageID
                 channel = await self.bot.fetch_channel(channel)
                 # send message to channel with who is available and how long
-                await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
+                #await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
 
-                # remove reaction from message
-                await self.bot.http.remove_reaction(channel.id, payload.message_id, emoji, payload.user_id)
+                # delete reaction of the user who added the emote
+                await payload.message_id.remove_reaction(emoji, member)
 
                 
 
@@ -329,12 +329,12 @@ class TempRoles(commands.Cog):
                     user_id = str(member.id)
                     user_time_count = calender_data[user_id]
 
-                    await channel.send(f"{member.mention} ist jetzt verfügbar für {user_time_count} Minuten")
+                    #await channel.send(f"{member.mention} ist jetzt verfügbar für {user_time_count} Minuten")
                 
                     channel = client.get_channel(payload.channel_id)
                     message = await channel.fetch_message(payload.message_id)
                     user = client.get_user(payload.user_id)
-                    emoji = client.get_emoji(912465249716809729)
+                    emoji = client.get_emoji(300)
                     await message.remove_reaction(emoji, user)
 
                 # remove reaction from message
