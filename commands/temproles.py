@@ -204,18 +204,20 @@ class TempRoles(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
 
-        ourMessageID = 912828826122321923
+        ourMessageID = 913560108456353813
 
         if ourMessageID == payload.message_id:
             member = payload.member
             guild = member.guild
             emoji = payload.emoji.name
             channel = payload.channel_id
+            message = await guild.get_channel(channel).fetch_message(ourMessageID)
+
             
 
             #checks what emote is added
             
-            if emoji == '300':
+            if emoji == '30':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
 
                 await member.add_roles(role)
@@ -224,12 +226,11 @@ class TempRoles(commands.Cog):
                 # send message to channel with who is available and how long
                 #await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
 
-                # delete reaction of the user who added the emote
-                await payload.message_id.remove_reaction(emoji, member)
-
+                # delete reaction of the user who added the 30 emote
                 
+                await message.remove_reaction(emoji, member)
 
-                
+
                 with open('.\\databases\\time.json', 'r') as file:
                     calender_data = json.load(file)
                     new_user = str(member.id)
@@ -297,9 +298,9 @@ class TempRoles(commands.Cog):
                     draw_on_image.text(time_count_text_position, (f'{user_time_count_table} Minuten'), 'white', font=font)
                     
                     # Save the image
-                    image_template.convert('RGB').save('test.png', 'PNG')
+                    image_template.convert('RGB').save('time.png', 'PNG')
                     
-                    await payload.member.send(file=discord.File('test.png'))
+                    await payload.member.send(file=discord.File('time.png'))
                 
                 
                 # remove role after 30 minutes
@@ -312,7 +313,7 @@ class TempRoles(commands.Cog):
         
 
 
-            elif emoji == '600':
+            elif emoji == '60':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
 
                 await member.add_roles(role)
@@ -412,11 +413,11 @@ class TempRoles(commands.Cog):
                     draw_on_image.text(time_count_text_position, (f'{user_time_count_table} Minuten'), 'white', font=font)
                     
                     # Save the image
-                    image_template.convert('RGB').save('test.png', 'PNG')
+                    image_template.convert('RGB').save('time.png', 'PNG')
                     
-                    await payload.member.send(file=discord.File('test.png'))
+                    await payload.member.send(file=discord.File('time.png'))
 
-            elif emoji == '900':
+            elif emoji == '90':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
                 
                 await member.add_roles(role)
