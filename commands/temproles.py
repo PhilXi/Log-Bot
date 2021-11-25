@@ -224,11 +224,14 @@ class TempRoles(commands.Cog):
                 # get channel with ourMessageID
                 channel = await self.bot.fetch_channel(channel)
                 # send message to channel with who is available and how long
-                #await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
+                await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
 
-                # delete reaction of the user who added the 30 emote
-                
-                await message.remove_reaction(emoji, member)
+                # get the emote that had been added
+                emote = discord.utils.get(message.guild.emojis, name="30")
+                # get the member who reacted
+                member1 = message.guild.get_member(payload.user_id)
+                # remove the emote from the message
+                await message.remove_reaction(emote, member1)
 
 
                 with open('.\\databases\\time.json', 'r') as file:
@@ -281,7 +284,7 @@ class TempRoles(commands.Cog):
                     
 
                     # Image
-                    image_template = Image.open('.\\assets\\test.png')
+                    image_template = Image.open('.\\assets\\time.png')
 
                     # Set Font
                     font = ImageFont.truetype('theboldfont.ttf', 14)
@@ -396,7 +399,7 @@ class TempRoles(commands.Cog):
                     
 
                     # Image
-                    image_template = Image.open('.\\assets\\test.png')
+                    image_template = Image.open('.\\assets\\time.png')
 
                     # Set Font
                     font = ImageFont.truetype('theboldfont.ttf', 14)
