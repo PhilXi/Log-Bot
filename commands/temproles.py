@@ -204,7 +204,8 @@ class TempRoles(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
 
-        ourMessageID = 913560108456353813
+        ourMessageID = 913933850739097610
+
 
         if ourMessageID == payload.message_id:
             member = payload.member
@@ -225,6 +226,16 @@ class TempRoles(commands.Cog):
                 channel = await self.bot.fetch_channel(channel)
                 # send message to channel with who is available and how long
                 await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
+
+                # delete the message after 5 seconds
+                await asyncio.sleep(5)
+
+                # get the last message in the channel
+                last_message = await channel.history(limit=1).flatten()
+
+                # delete the message
+                await last_message[0].delete()
+                                
 
                 # get the emote that had been added
                 emote = discord.utils.get(message.guild.emojis, name="30")
