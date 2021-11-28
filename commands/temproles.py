@@ -224,17 +224,6 @@ class TempRoles(commands.Cog):
                 await member.add_roles(role)
                 # get channel with ourMessageID
                 channel = await self.bot.fetch_channel(channel)
-                # send message to channel with who is available and how long
-                await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
-
-                # delete the message after 5 seconds
-                await asyncio.sleep(5)
-
-                # get the last message in the channel
-                last_message = await channel.history(limit=1).flatten()
-
-                # delete the message
-                await last_message[0].delete()
                                 
 
                 # get the emote that had been added
@@ -315,6 +304,19 @@ class TempRoles(commands.Cog):
                     image_template.convert('RGB').save('time.png', 'PNG')
                     
                     await payload.member.send(file=discord.File('time.png'))
+
+                    
+                # send message to channel with who is available and how long
+                await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
+
+                # delete the message after 5 seconds
+                await asyncio.sleep(5)
+
+                # get the last message in the channel
+                last_message = await channel.history(limit=1).flatten()
+
+                # delete the message
+                await last_message[0].delete()
                 
                 
                 # remove role after 30 minutes
