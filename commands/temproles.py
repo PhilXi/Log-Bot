@@ -336,6 +336,16 @@ class TempRoles(commands.Cog):
                 # get channel with ourMessageID
                 channel = await self.bot.fetch_channel(channel)
 
+                # get the emote that had been added
+                emote = discord.utils.get(message.guild.emojis, name="60")
+
+                # get the member who reacted
+                member2 = message.guild.get_member(payload.user_id)
+
+                # remove the emote from the message
+                await message.remove_reaction(emote, member2)
+
+
                 # shows how long user is available
                 with open('.\\databases\\time.json', 'r') as file:
                     user_time_count_table = json.load(file)
@@ -345,21 +355,6 @@ class TempRoles(commands.Cog):
                     calender_data = json.load(file)
                     user_id = str(member.id)
                     user_time_count = calender_data[user_id]
-
-                    #await channel.send(f"{member.mention} ist jetzt verfügbar für {user_time_count} Minuten")
-                
-                    channel = client.get_channel(payload.channel_id)
-                    message = await channel.fetch_message(payload.message_id)
-                    user = client.get_user(payload.user_id)
-                    emoji = client.get_emoji(300)
-                    await message.remove_reaction(emoji, user)
-
-                # remove reaction from message
-                #await payload.message.remove_reaction(payload.emoji, member)
-                #await payload.message.remove_reaction(emoji, member)
-
-                message = await self.bot.fetch_message(payload.message_id)
-                await message.remove_reaction(payload.emoji, member)
                     
 
                 with open('.\\databases\\time.json', 'r') as file:
@@ -433,6 +428,37 @@ class TempRoles(commands.Cog):
                     
                     await payload.member.send(file=discord.File('time.png'))
 
+                    
+                # send message to channel with who is available and how long
+                await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
+
+                # delete the message after 5 seconds
+                await asyncio.sleep(5)
+
+                # get the last message in the channel
+                last_message = await channel.history(limit=1).flatten()
+
+                # delete the message
+                await last_message[0].delete()
+
+                
+                # remove role after 30 minutes
+                await asyncio.sleep(10)
+                await member.remove_roles(role)
+                # send message to channel that the user is no longer available
+                await channel.send(f"{member.mention} ist nicht mehr verfügbar")
+
+                
+                # delete the message after 5 seconds
+                await asyncio.sleep(5)
+
+                # get the last message in the channel
+                last_message = await channel.history(limit=1).flatten()
+
+                # delete the message
+                await last_message[0].delete()
+
+
             elif emoji == '90':
                 role = discord.utils.get(guild.roles, name="Verfügbar")
                 
@@ -492,6 +518,8 @@ class TempRoles(commands.Cog):
                 
                 # sends message to channel
                 await channel.send(f"{member.mention} ist jetzt nicht mehr verfügbar")
+
+                
 
 
 
