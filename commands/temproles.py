@@ -2,6 +2,7 @@ import discord
 import json
 from discord import message
 from discord import channel
+from discord import user
 from discord.ext import commands
 from tabulate import tabulate
 from PIL import Image, ImageFont, ImageDraw
@@ -226,13 +227,13 @@ class TempRoles(commands.Cog):
                     new_user = str(member.id)
                             
                     if new_user in calender_data:
-                        calender_data[new_user] + 30
+                        calender_data[new_user] + 1800
                         with open('.\\databases\\time.json', 'w') as update_user_data:
                             json.dump(calender_data, update_user_data, indent=4)
 
                     # add new user
                     else:
-                        calender_data[new_user] = 30
+                        calender_data[new_user] = 1800
                         with open('.\\databases\\time.json', 'w') as new_user_data:
                             json.dump(calender_data, new_user_data, indent=4)
 
@@ -291,6 +292,8 @@ class TempRoles(commands.Cog):
                     image_template.convert('RGB').save('time.png', 'PNG')
                     
                     await payload.member.send(file=discord.File('time.png'))
+
+                    
   
                 # send message to channel with who is available and how long
                 await channel.send(f"{member.mention} ist jetzt verfügbar für 30 Minuten")
@@ -301,22 +304,26 @@ class TempRoles(commands.Cog):
                 # get the last message in the channel
                 last_message = await channel.history(limit=1).flatten()
 
+                # get the last message in the direct message
+                last_message_dm = await member.dm_channel.history(limit=1).flatten()
+
+
                 # delete the message
                 await last_message[0].delete()
+                await last_message_dm[0].delete()
 
                 
-                # sleep for 30 Minutes 
-                await asyncio.sleep(30)
-               
-                # check if minutes are zero
-                if calender_data[new_user] == 0:
-                    await member.remove_roles(role)
-                    # send message to channel that the user is no longer available
-                    await channel.send(f"{member.mention} ist nicht mehr verfügbar")
-
-                else:
-                    return
-                
+                # for every second passed, subtract 1 from the time count if count is 0 remove role
+                while True:
+                    if calender_data[new_user] == 0:
+                        role = discord.utils.get(guild.roles, name="Verfügbar")
+                        await member.remove_roles(role)
+                        break
+                    else:
+                        calender_data[new_user] -= 1
+                        with open('.\\databases\\time.json', 'w') as update_user_data:
+                            json.dump(calender_data, update_user_data, indent=4)
+                        await asyncio.sleep(1)
 
                 
                 # delete the message after 5 seconds
