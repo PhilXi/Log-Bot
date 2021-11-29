@@ -305,15 +305,18 @@ class TempRoles(commands.Cog):
                 await last_message[0].delete()
 
                 
-                # remove role after 30 minutes
-                await asyncio.sleep(15)
+                # sleep for 30 Minutes 
+                await asyncio.sleep(30)
+               
                 # check if minutes are zero
                 if calender_data[new_user] == 0:
                     await member.remove_roles(role)
+                    # send message to channel that the user is no longer available
+                    await channel.send(f"{member.mention} ist nicht mehr verfügbar")
+
                 else:
                     return
-                # send message to channel that the user is no longer available
-                await channel.send(f"{member.mention} ist nicht mehr verfügbar")
+                
 
                 
                 # delete the message after 5 seconds
