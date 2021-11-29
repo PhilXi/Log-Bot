@@ -227,13 +227,13 @@ class TempRoles(commands.Cog):
                     new_user = str(member.id)
                             
                     if new_user in calender_data:
-                        calender_data[new_user] + 1800
+                        calender_data[new_user] + 30
                         with open('.\\databases\\time.json', 'w') as update_user_data:
                             json.dump(calender_data, update_user_data, indent=4)
 
                     # add new user
                     else:
-                        calender_data[new_user] = 1800
+                        calender_data[new_user] = 30
                         with open('.\\databases\\time.json', 'w') as new_user_data:
                             json.dump(calender_data, new_user_data, indent=4)
 
