@@ -50,7 +50,7 @@ class TempRoles(commands.Cog):
                 await ctx.send("Du hast noch keine Zeit verfügbar.")
 
     @commands.command(pass_context=True)
-    async def addminutes(self, ctx, minutes: int):
+    async def add(self, ctx, minutes: int):
         #Fügt Minuten zu deiner verfügbaren Zeit hinzu
 
         # turn every minute into 60 seconds
@@ -72,7 +72,7 @@ class TempRoles(commands.Cog):
 
 
     @commands.command(pass_context=True)
-    async def removeminutes(self, ctx, minutes: int):
+    async def rem(self, ctx, minutes: int):
         #Entfernt Minuten von deiner verfügbaren Zeit
 
         with open('.\\databases\\time.json', 'r') as file:
@@ -318,6 +318,7 @@ class TempRoles(commands.Cog):
                     if calender_data[new_user] == 0:
                         role = discord.utils.get(guild.roles, name="Verfügbar")
                         await member.remove_roles(role)
+                        await channel.send(f"{member.mention} ist jetzt nicht mehr verfügbar")
                         break
                     else:
                         calender_data[new_user] -= 1
@@ -603,9 +604,6 @@ class TempRoles(commands.Cog):
 
                 # remove reaction
                 await payload.message.remove_reaction(emoji, member)
-
-
-        
 
 def setup(bot):
     bot.add_cog(TempRoles(bot))
