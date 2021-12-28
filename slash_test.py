@@ -1,8 +1,15 @@
 import discord
+from discord import client
+from discord import guild
+from discord.commands.commands import Option
 from discord.ui import Button, View
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='!')
+bot = discord.Bot(command_prefix='!')
+
+@bot.event
+async def on_ready():
+    print('Ready!')
 
 @bot.command()
 async def hello(ctx):
@@ -34,4 +41,11 @@ async def test(ctx):
     await ctx.send("Button", view=view)
 
 
-bot.run("")
+@bot.slash_command(name="test", description = "Test command", guild_ids = [822227357644357633])
+async def test(ctx):
+    await ctx.respond("passed")
+
+
+
+
+bot.run("ODIzNjkyMzA4ODI2MjkyMjQ0.YFkhPQ.3BOX2Eho3lmWCuvPAYtIZRGrNeA")
