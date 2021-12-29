@@ -23,8 +23,8 @@ class ServerJoinsLeaves(Cog):
 			timestamp = datetime.utcnow()
         )
 		embed.set_author(name=f"{member.name}#{member.discriminator}",
-		icon_url=member.avatar_url)
-		embed.set_thumbnail(url=member.avatar_url)
+		icon_url=member.display_avatar)
+		embed.set_thumbnail(url=member.display_avatar)
 		#embed.add_field(f"{member.mention} hat den Server verlassen")
 		embed.set_footer(text=f"User ID: {member.id}")
 
@@ -38,8 +38,8 @@ class ServerJoinsLeaves(Cog):
 			timestamp = datetime.utcnow()
         )
 		embed.set_author(name=f"{member.name}#{member.discriminator}",
-		icon_url=member.avatar_url)
-		embed.set_thumbnail(url=member.avatar_url)
+		icon_url=member.display_avatar)
+		embed.set_thumbnail(url=member.display_avatar)
 		embed.add_field(name='Accounterstellung', value=member.created_at.strftime("%d.%m.%Y"), inline=False)
 		embed.set_footer(text=f"User ID: {member.id}")
 

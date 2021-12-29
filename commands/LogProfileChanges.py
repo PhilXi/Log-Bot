@@ -26,8 +26,8 @@ class ProfileChanges(Cog):
 				timestamp = datetime.utcnow()
             )
 			embed.set_author(name=f"{after.name}#{after.discriminator}",
-			icon_url=after.avatar_url)
-			embed.set_thumbnail(url=after.avatar_url)
+			icon_url=after.display_avatar)
+			embed.set_thumbnail(url=after.display_avatar)
 			embed.set_footer(text=f"User ID: {after.id}")
 
 			fields = [("Before", before.name, False),("After", after.name, False)]
@@ -46,7 +46,7 @@ class ProfileChanges(Cog):
 				timestamp = datetime.utcnow()
             )
 			embed.set_author(name=f"{after.name}#{after.discriminator}",
-			icon_url=after.avatar_url)
+			icon_url=after.display_avatar)
 			embed.set_footer(text=f"User ID: {after.id}")
 
 			fields = [("Before", before.discriminator, False),("After", after.discriminator, False)]
@@ -67,8 +67,8 @@ class ProfileChanges(Cog):
 			icon_url=after.avatar_url)
 			embed.set_footer(text=f"User ID: {after.id}")
 
-			embed.set_thumbnail(url=after.avatar_url)
-			embed.add_field(name='Avatar', value=f"[Before:]({before.avatar_url}) -> [After]({after.avatar_url})", inline=False)
+			embed.set_thumbnail(url=after.display_avatar)
+			embed.add_field(name='Avatar', value=f"[Before:]({before.display_avatar}) -> [After]({after.display_avatar})", inline=False)
 
 			await self.log_channel.send(embed=embed)
 

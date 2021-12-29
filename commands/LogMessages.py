@@ -3,6 +3,7 @@ from datetime import datetime
 from discord import Embed
 from discord.ext.commands import Cog
 from discord.ext.commands import command
+from discord.message import Attachment
 
 
 class Log(Cog):
@@ -44,12 +45,21 @@ class Log(Cog):
                 title="Message deleted",
 				description=f"A message from {message.author.mention} in {message.channel.mention} was deleted",
 				colour = discord.Colour.red(),
-				icon_url=message.author.avatar_url,
+				#url=message.author.display_avatar,
 				timestamp=datetime.utcnow()
             )
 			embed.set_author(name=message.author,
-			icon_url=message.author.avatar_url)
+			icon_url=message.author.display_avatar)
 			embed.set_footer(text=f"User ID: {message.author.id} " + "\n" f"Message ID: {message.id}")
+			# checks if the message has attachments and return if so
+			if message.attachments:
+				await self.log_channel.send(message.attachments[0].url)
+				# check if the message only has attachments
+				if message.content == "":
+					# define the message.content as the attachment name and hyperlink the attachment url
+					message.content = f"[{message.attachments[0].filename}]({message.attachments[0].url})"
+
+
 			fields = [("Content:", message.content, False)]
 
 			for name, value, inline in fields:

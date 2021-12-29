@@ -41,11 +41,11 @@ async def test(ctx):
     await ctx.send("Button", view=view)
 
 
-@bot.slash_command(name="test", description = "Test command", guild_ids = [822227357644357633])
+@bot.slash_command(name="test", description = "Test command", guild_ids = [869166822245670912])
 async def test(ctx):
     await ctx.respond("passed")
 
 
 
 
-bot.run("ODIzNjkyMzA4ODI2MjkyMjQ0.YFkhPQ.3BOX2Eho3lmWCuvPAYtIZRGrNeA")
+bot.run()

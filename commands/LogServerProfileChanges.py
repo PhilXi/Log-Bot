@@ -24,8 +24,8 @@ class ServerProfileChanges(Cog):
 				timestamp = datetime.utcnow()
             )
 			embed.set_author(name=f"{after.nick}#{after.discriminator}",
-			icon_url=after.avatar_url)
-			embed.set_thumbnail(url=after.avatar_url)
+			icon_url=after.display_avatar) #display avatar and guild avatar
+			embed.set_thumbnail(url=after.display_avatar)
 			embed.set_footer(text=f"User ID: {after.id}")
 
 			fields = [("Before", before.display_name, False),
@@ -94,6 +94,8 @@ class ServerProfileChanges(Cog):
 			embed.set_footer(text=f"User ID: {after.id}"),
 
 			await self.log_channel.send(embed=embed)
+		
+		#elif before.guild_avatar != after.guild_avatar:
 
 def setup(bot):
 	bot.add_cog(ServerProfileChanges(bot))

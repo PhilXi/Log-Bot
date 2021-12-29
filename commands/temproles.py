@@ -70,6 +70,10 @@ class TempRoles(commands.Cog):
             else:
                 await ctx.send("Du hast noch keine Zeit verfügbar.")
 
+    @bot.slash_command(name="add", description = "adds a specific amount of time to the database", guild_ids = [869166822245670912])
+    async def test(ctx):
+        await ctx.respond("test")
+
 
     @commands.command(pass_context=True)
     async def rem(self, ctx, minutes: int):
@@ -180,7 +184,7 @@ class TempRoles(commands.Cog):
 
 
 
-            draw_on_image.text(time_count_text_position, (f'{user_time_count / 60} Minuten'), 'white', font=font)
+            draw_on_image.text(time_count_text_position, (f'{user_time_count} Minuten'), 'white', font=font)
 
             # Save the image
             image_template.convert('RGB').save('time.png', 'PNG')
