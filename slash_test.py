@@ -10,6 +10,7 @@ bot = discord.Bot(command_prefix='!')
 @bot.event
 async def on_ready():
     print('Ready!')
+    
 
 @bot.command()
 async def hello(ctx):
@@ -48,4 +49,4 @@ async def test(ctx):
 
 
 
-bot.run()
+bot.run("")

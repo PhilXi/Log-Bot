@@ -8,6 +8,10 @@ from tabulate import tabulate
 from PIL import Image, ImageFont, ImageDraw
 from discord.ext.commands import Cog
 import asyncio
+from discord import client
+from discord import guild
+from discord.commands.commands import Option
+from discord.ui import Button, View
 
 
 intents = discord.Intents.all()
@@ -18,7 +22,6 @@ class TempRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot 
         self.bot.remove_command('help')
-
 
     @commands.command(pass_context=True)
     async def time(self, ctx):
@@ -70,9 +73,27 @@ class TempRoles(commands.Cog):
             else:
                 await ctx.send("Du hast noch keine Zeit verfügbar.")
 
-    @bot.slash_command(name="add", description = "adds a specific amount of time to the database", guild_ids = [869166822245670912])
+    @bot.slash_command(name="test", description = "Test command", guild_ids = [869166822245670912])
     async def test(ctx):
-        await ctx.respond("test")
+        await ctx.respond("passed")
+
+    
+    @commands.command(pass_context = True)
+    async def hello(self, ctx):
+        button1 = Button(label = "Hello World!", style = discord.ButtonStyle.green, emoji = "🤖") #green button
+        button1_1 = Button(label = "Hello World", style = discord.ButtonStyle.blurple) # blue button
+        button2 = Button(emoji = "<:members:871691185721331762>") # without any stile the default color gray is used
+        button3 = Button(label = "This is a important Button", style = discord.ButtonStyle.red) 
+        button4 = Button(label = "This is a Link-Button", url = "https://discord.com/")
+        # add the Buttons to the message
+        view = View()
+        view.add_item(button1)
+        view.add_item(button2)
+        view.add_item(button3)
+        view.add_item(button4)
+        view.add_item(button1_1)
+        #view.remove_item(button)
+        await ctx.send(embed=discord.Embed(title="Hello World!", description="This is a test embed."), view=view)
 
 
     @commands.command(pass_context=True)
@@ -91,7 +112,6 @@ class TempRoles(commands.Cog):
             else:
                 await ctx.send("Du hast noch keine Zeit verfügbar.")
         
-
     @commands.command(pass_context=True)
     async def showtimeofanotheruser(self, ctx, user: discord.Member):
         #Zeigt die verfügbare Zeit eines anderen Users an
@@ -192,8 +212,6 @@ class TempRoles(commands.Cog):
 
 
             await ctx.send(file=discord.File('time.png'))
-
-
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):

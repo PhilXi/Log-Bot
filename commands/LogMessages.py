@@ -26,7 +26,7 @@ class Log(Cog):
 					timestamp=datetime.utcnow()
 				)
 				embed.set_author(name=after.author,
-				icon_url=after.author.avatar_url)
+				icon_url=after.author.display_avatar)
 				embed.set_footer(text=f"User ID: {after.author.id} " + "\n" f"Message ID: {after.id}")
 
 				fields = [("Before", before.content, False),
@@ -65,7 +65,11 @@ class Log(Cog):
 			for name, value, inline in fields:
 				embed.add_field(name=name, value=value, inline=inline)
 
-			await self.log_channel.send(embed=embed)
+			# check if the message author is a bot
+			if message.author.bot:
+				return
+			else:
+				await self.log_channel.send(embed=embed)
 
 def setup(bot):
 	bot.add_cog(Log(bot))
